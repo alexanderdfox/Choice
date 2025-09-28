@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Circle Path Follower</title>
     <style>
+        @media print {
+          body {
+            display: none !important;
+          }
+        }
         * {
             margin: 0;
             padding: 0;
@@ -136,6 +141,15 @@
             animation: pulse 2s ease-in-out infinite;
         }
 
+        .trail {
+            fill: none;
+            stroke: #8A2BE2;
+            stroke-width: 3;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            opacity: 0.8;
+        }
+
         #svgContainer {
             width: 100%;
             height: 100%;
@@ -189,6 +203,8 @@
             
             var animationId = null;
             var isAnimating = false;
+            var trailPath = null;
+            var trailPoints = [];
 
             // Function to generate a path that follows the inside contour of the original path
             function generateContourPath(originalPath, offset) {
@@ -269,6 +285,15 @@
             isAnimating = true;
             dot.classList.add('visible', 'animating');
             
+            // Create or reset the trail path
+            if (trailPath) {
+                trailPath.parentNode.removeChild(trailPath);
+            }
+            trailPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            trailPath.setAttribute("class", "trail");
+            currentSvg.appendChild(trailPath);
+            trailPoints = [];
+            
             // Generate the contour path
             var contourPathData = generateContourPath(path, 2);
             
@@ -297,6 +322,18 @@
                 
                 dot.setAttribute("cx", pos.x);
                 dot.setAttribute("cy", pos.y);
+                
+                // Add point to trail
+                trailPoints.push({ x: pos.x, y: pos.y });
+                
+                // Update trail path
+                if (trailPoints.length > 1) {
+                    var trailData = 'M ' + trailPoints[0].x + ' ' + trailPoints[0].y;
+                    for (var i = 1; i < trailPoints.length; i++) {
+                        trailData += ' L ' + trailPoints[i].x + ' ' + trailPoints[i].y;
+                    }
+                    trailPath.setAttribute("d", trailData);
+                }
                 
                 animationId = requestAnimationFrame(animate);
             }
