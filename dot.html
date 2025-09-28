@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crown of Thorns - Print</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .print-container {
+            max-width: 100%;
+            max-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .crown-svg {
+            width: 100%;
+            height: auto;
+            max-width: 100%;
+            max-height: 100vh;
+            object-fit: contain;
+        }
+        
+        /* Print-specific styles */
+        @media print {
+            * {
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            
+            body {
+                display: block !important;
+                min-height: auto !important;
+                padding: 0 !important;
+            }
+            
+            .print-container {
+                width: 100% !important;
+                height: 100% !important;
+                max-width: none !important;
+                max-height: none !important;
+                display: block !important;
+                page-break-inside: avoid !important;
+            }
+            
+            .crown-svg {
+                width: 100% !important;
+                height: auto !important;
+                max-width: 100% !important;
+                max-height: 100vh !important;
+                display: block !important;
+                margin: 0 auto !important;
+                page-break-inside: avoid !important;
+            }
+            
+            @page {
+                margin: 0.5in;
+                size: A4;
+            }
+        }
+        
+        /* Hide elements that shouldn't print */
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+        }
+        
+        /* Loading indicator */
+        .loading {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 18px;
+            color: #666;
+        }
+        
+        .crown-svg.hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="loading" id="loading">Loading Crown of Thorns...</div>
+    
+    <div class="print-container">
+        <img src="crownofthorns.svg" alt="Crown of Thorns" class="crown-svg hidden" id="crownSvg">
+    </div>
+
+    <script>
+        // Wait for SVG to load
+        document.addEventListener('DOMContentLoaded', function() {
+            var svg = document.getElementById('crownSvg');
+            var loading = document.getElementById('loading');
+            
+            svg.onload = function() {
+                loading.style.display = 'none';
+                svg.classList.remove('hidden');
+                
+                // Auto-trigger print dialog after a short delay
+                setTimeout(function() {
+                    window.print();
+                }, 500);
+            };
+            
+            svg.onerror = function() {
+                loading.textContent = 'Error loading SVG file';
+                loading.style.color = 'red';
+            };
+        });
+        
+        // Handle print events
+        window.addEventListener('beforeprint', function() {
+            console.log('Print dialog opening...');
+        });
+        
+        window.addEventListener('afterprint', function() {
+            console.log('Print dialog closed');
+            // Optionally close the window after printing
+            // window.close();
+        });
+    </script>
+</body>
+</html>

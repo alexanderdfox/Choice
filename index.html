@@ -3,10 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Circle Path Follower</title>
+    <title>Crown of Thorns</title>
     <style>
         @media print {
+          html, body {
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            overflow: visible !important;
+          }
+          
           body {
+            display: none !important;
+          }
+          
+          .pdf-print {
+            display: block !important;
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            z-index: 999999 !important;
+            background: white !important;
+          }
+          
+          .pdf-print img {
+            width: 100% !important;
+            height: auto !important;
+            max-width: 100% !important;
+            max-height: 100vh !important;
+            border: none !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            display: block !important;
+            page-break-inside: avoid !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
+          
+          /* Hide all other elements */
+          .container, #svgContainer, svg, .instructions {
+            display: none !important;
+          }
+        }
+        
+        .pdf-print {
+          display: none;
+        }
+        
+        
+        .print-button {
+          position: fixed;
+          top: 20px;
+          right: 20px;
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          color: white;
+          border: none;
+          padding: 12px 24px;
+          border-radius: 25px;
+          font-size: 14px;
+          font-weight: 600;
+          cursor: pointer;
+          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+          transition: all 0.3s ease;
+          z-index: 1000;
+          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .print-button:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .print-button:active {
+          transform: translateY(0);
+        }
+        
+        @media print {
+          .print-button {
             display: none !important;
           }
         }
@@ -172,6 +250,16 @@
     </style>
 </head>
 <body>
+    <!-- Print Button -->
+    <button class="print-button" onclick="printDocument()">
+        🖨️ Print Crown of Thorns
+    </button>
+    
+    <!-- SVG display for printing - cross-browser compatible -->
+    <div class="pdf-print">
+        <img id="printImage" alt="Crown of Thorns" style="width: 100%; height: auto; display: block;">
+    </div>
+    
     <div class="container">
         <div id="svgContainer">
 
@@ -196,7 +284,33 @@
             }
         }
         
+        // Auto-load SVG function
+        function loadSVGImage() {
+            var printImage = document.getElementById('printImage');
+            if (printImage) {
+                printImage.src = 'crownofthorns.svg';
+                printImage.onload = function() {
+                    console.log('SVG image loaded successfully');
+                };
+                printImage.onerror = function() {
+                    console.error('Failed to load SVG image');
+                    // Fallback to PNG if SVG fails
+                    printImage.src = 'connectthedots.png';
+                };
+            }
+        }
+        
+        // Print function for the print button
+        function printDocument() {
+            // Open dedicated print page
+            window.open('dot.html', '_blank');
+        }
+        
+
         domReady(function() {
+            // Load SVG image for printing (though not needed for direct SVG opening)
+            loadSVGImage();
+            
             var currentSvg = document.getElementById("mainSvg");
             var path = document.getElementById("mypath");
             var dot = document.getElementById("dot");
